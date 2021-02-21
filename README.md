@@ -22,6 +22,7 @@ npm install
 lalu buat file .env dengan isi
 ```
 VUE_APP_BACKEND = API backend yang digunakan
+VUE_APP_MAP_KEY = key dari google maps
 ```
 
 ## berikut untuk lebih lengkapnya

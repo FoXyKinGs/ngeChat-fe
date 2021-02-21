@@ -1,4 +1,4 @@
-# frond-end ngeChat
+# front-end ngeChat
 
 Aplikasi chatting berbasis website yang memiliki beberapa fitur utama di antara lain
 - login

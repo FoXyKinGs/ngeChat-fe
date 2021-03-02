@@ -62,7 +62,6 @@ export default {
         alert('All data must be filled')
       } else {
         this.actionLogin(this.loginData).then((response) => {
-          alert('Login success')
           this.$router.push('/')
         }).catch((err) => {
           alert(err)

@@ -53,6 +53,15 @@ const moduleUsers = {
         })
       })
     },
+    changeProfile (context, { id, data }) {
+      return new Promise((resolve, reject) => {
+        axios.patch(`http://localhost:4000/updateprofile/${id}`, data).then((response) => {
+          resolve(response)
+        }).catch((err) => {
+          reject(err.response.data)
+        })
+      })
+    },
     changePhoto (context, { id, files }) {
       return new Promise((resolve, reject) => {
         axios.patch(`http://localhost:4000/updateimage/${id}`, files).then((response) => {

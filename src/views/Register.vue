@@ -61,7 +61,7 @@ export default {
         alert('All data must be filled')
       } else {
         this.actionRegister(this.dataUser).then((response) => {
-          alert('Account registered')
+          alert('Succes register')
           this.$router.push('/login')
         }).catch((err) => {
           alert(err)

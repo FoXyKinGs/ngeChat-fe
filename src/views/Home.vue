@@ -116,12 +116,24 @@
               <p>{{getDataReceiver.email}}</p>
               </div>
               <hr>
+              <hr>
+              <div class="phone">
+                <p>Phone</p>
+                <p>{{getDataReceiver.phone}}</p>
+              </div>
+              <hr>
+              <hr>
+              <div class="bio">
+                <p>Bio</p>
+                <p>{{getDataReceiver.bio}}</p>
+              </div>
+              <hr>
               </div>
               <hr>
             <div class="map">
               <p>Location</p>
-              <GoogleMapMaps :center="{ lat: -6.89846733562317, lng: 107.60501039761238 }" :zoom="12" class="location">
-                <GoogleMapMarker :position="{ lat: -6.89846733562317, lng: 107.60501039761238 }" :draggable="false"/>
+              <GoogleMapMaps :center="{ lat: Number(getDataReceiver.lat), lng: Number(getDataReceiver.lng) }" :zoom="12" class="location">
+                <GoogleMapMarker :position="{ lat: Number(getDataReceiver.lat), lng: Number(getDataReceiver.lng) }" :draggable="false"/>
               </GoogleMapMaps>
             </div>
             <hr>
@@ -153,15 +165,69 @@
         </div>
         <hr>
         <hr>
+        <div class="phone">
+          <p>Phone</p>
+          <p>{{getDataUser.phone}}</p>
+        </div>
+        <hr>
+        <hr>
+        <div class="bio">
+          <p>Bio</p>
+          <p>{{getDataUser.bio}}</p>
+        </div>
+        <hr>
+        <hr>
         <div class="map">
           <p>Location</p>
-          <GoogleMapMaps :center="{ lat: -6.89846733562317, lng: 107.60501039761238 }" :zoom="12" class="location">
-            <GoogleMapMarker :position="{ lat: -6.89846733562317, lng: 107.60501039761238 }" :draggable="false"/>
+          <GoogleMapMaps :center="{ lat: Number(getDataUser.lat), lng: Number(getDataUser.lng) }" :zoom="12" class="location">
+            <GoogleMapMarker :position="{ lat: Number(getDataUser.lat), lng: Number(getDataUser.lng) }" :draggable="false"/>
           </GoogleMapMaps>
+        </div>
+        <hr>
+        <hr>
+        <div class="editprofile">
+          <button class="btn btn-primary" @click="$bvModal.show('modal-edit-profile')" >Edit profile</button>
         </div>
         <hr>
       </div>
     </div>
+
+    <!-- change profile modal -->
+    <b-modal id="modal-edit-profile" title="Edit profile">
+          <form>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Phone</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" :placeholder="getDataUser.phone" v-model="editProfile.phone">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Bio</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" :placeholder="getDataUser.bio" v-model="editProfile.bio">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">lat</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" :placeholder="getDataUser.lat" v-model="editProfile.lat">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">lng</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" :placeholder="getDataUser.lng" v-model="editProfile.lng">
+                </div>
+              </div>
+           </form>
+      <template #modal-footer>
+        <div class="w-100">
+        <b-button type="button" class="btn btn-danger text-white border-0" block @click="$bvModal.hide('modal-edit-profile')">Cancel</b-button>
+        <b-button type="button" class="btn text-white border-0" style="background-color: #7E98DF;" block @click="changedProfile()">Save</b-button>
+        </div>
+      </template>
+        </b-modal>
+    <!-- end -->
   </div>
 </template>
 
@@ -194,7 +260,13 @@ export default {
       profileReceiver: false,
       imgUrl: '',
       image: '',
-      username: ''
+      username: '',
+      editProfile: {
+        phone: null,
+        bio: null,
+        lat: null,
+        lng: null
+      }
     }
   },
   computed: {
@@ -209,7 +281,8 @@ export default {
       setDataUser: 'user/detailUser',
       actionLogout: 'auth/logout',
       actionGetReceiver: 'user/detailUserReceiver',
-      changePhoto: 'user/changePhoto'
+      changePhoto: 'user/changePhoto',
+      changeProfile: 'user/changeProfile'
     }),
     scrollBottom () {
       const objDiv = document.getElementById('chat-content')
@@ -262,7 +335,6 @@ export default {
       if (msg) {
         this.actionLogout()
         this.$router.push('/login')
-        alert("You're logged out")
       }
     },
     setImage (e) {
@@ -281,7 +353,29 @@ export default {
         id: this.id,
         files: fd
       }
-      this.changePhoto(result)
+      this.changePhoto(result).then((response) => {
+        console.log('change photo success')
+      }).catch((err) => {
+        alert(err.message)
+      })
+    },
+    changedProfile () {
+      const data = {
+        id: this.id,
+        data: {
+          phone: this.editProfile.phone,
+          bio: this.editProfile.bio,
+          lat: this.editProfile.lat,
+          lng: this.editProfile.lng
+        }
+      }
+      this.changeProfile(data).then((response) => {
+        alert('Succes update profile')
+        this.setDataUser(this.id)
+        this.$bvModal.hide('modal-edit-profile')
+      }).catch((err) => {
+        alert(err)
+      })
     }
   },
   mounted () {
@@ -392,6 +486,16 @@ export default {
     height: 45vh;
     overflow: auto;
   }
+  .container-fluid .row .chat-party .party-room-chat .chatting-party::-webkit-scrollbar{
+     width: 5px;
+  }
+  .container-fluid .row .chat-party .party-room-chat .chatting-party::-webkit-scrollbar-track {
+  background: #e5e5e5;
+  }
+  .container-fluid .row .chat-party .party-room-chat .chatting-party::-webkit-scrollbar-thumb {
+  background-color: #7E98DF;
+  border-radius: 20px;
+  }
   .container-fluid .row .chat-party .party-room-chat .chatting-party .party-room{
     position: relative;
     cursor: pointer;
@@ -464,7 +568,7 @@ export default {
   background: #e5e5e5;
   }
   .container-fluid .row .chat-room .chat .chat-content::-webkit-scrollbar-thumb {
-  background-color: #5e5e5e;
+  background-color: #7E98DF;
   border-radius: 20px;
   }
   .container-fluid .row .chat-room .chat .chat-content .self-box{
@@ -539,9 +643,21 @@ export default {
     right: 0;
     width: 50%;
     height: 100vh;
+    overflow: auto;
     background: #FFFFFF;
     z-index: 10;
     border-left: 1px solid #e5e5e5;
+    overflow: auto;
+  }
+  .detail-receiver::-webkit-scrollbar{
+     width: 5px;
+  }
+  .detail-receiver::-webkit-scrollbar-track {
+  background: #e5e5e5;
+  }
+  .detail-receiver::-webkit-scrollbar-thumb {
+  background-color: #7E98DF;
+  border-radius: 20px;
   }
   .detail-receiver .header .icon{
     position: absolute;
@@ -573,6 +689,12 @@ export default {
   .detail-receiver .profile .email{
     padding: 0 30px 0 30px;
   }
+  .detail-receiver .profile .phone{
+    padding: 0 30px 0 30px;
+  }
+  .detail-receiver .profile .bio{
+    padding: 0 30px 0 30px;
+  }
   .detail-receiver .map{
     padding: 0 30px 0 30px;
   }
@@ -585,7 +707,18 @@ export default {
     top: 0;
     width: 33.2%;
     height: 100vh;
-    background: #FFFFFF;
+    overflow: auto;
+    background: #ffffff;
+  }
+  .edit-profile::-webkit-scrollbar{
+     width: 5px;
+  }
+  .edit-profile::-webkit-scrollbar-track {
+  background: #e5e5e5;
+  }
+  .edit-profile::-webkit-scrollbar-thumb {
+  background-color: #7E98DF;
+  border-radius: 20px;
   }
   .edit-profile .header .icon{
     position: absolute;
@@ -626,12 +759,22 @@ export default {
   .edit-profile .profile .email{
     padding: 0 30px 0 30px;
   }
+  .edit-profile .profile .phone{
+    padding: 0 30px 0 30px;
+  }
+  .edit-profile .profile .bio{
+    padding: 0 30px 0 30px;
+  }
   .edit-profile .profile .map{
     padding: 0 30px 0 30px;
   }
   .edit-profile .profile .map .location{
     width: 100%;
     height: 180px;
+  }
+  .edit-profile .profile .editprofile{
+    display: flex;
+    justify-content: center;
   }
 
   .setting{
@@ -650,6 +793,14 @@ export default {
     background-color: transparent;
     color: #FFFFFF;
   }
+  .changeprofile{
+    position: absolute;
+    top: 0;
+    width: 33.2%;
+    height: 100vh;
+    overflow: auto;
+    background: #ffffff;
+  }
 
   @media (max-width: 768px){
     .home{
@@ -662,7 +813,7 @@ export default {
     }
     .edit-profile{
       width: 100%;
-      height: 400px;
+      height: 100vh;
       margin-bottom: 100px;
     }
     .detail-receiver .map .location{

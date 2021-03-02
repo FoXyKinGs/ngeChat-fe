@@ -14,7 +14,7 @@ const moduleRegister = {
   actions: {
     registerAccount (context, data) {
       return new Promise((resolve, reject) => {
-        axios.post('http://localhost:4000/register', data).then((response) => {
+        axios.post(`${context.rootState.setURL}/register`, data).then((response) => {
           resolve(response)
         }).catch((err) => {
           reject(err.response.data)

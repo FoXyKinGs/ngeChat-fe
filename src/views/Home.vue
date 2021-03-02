@@ -370,6 +370,10 @@ export default {
         }
       }
       this.changeProfile(data).then((response) => {
+        this.editProfile.phone = ''
+        this.editProfile.bio = ''
+        this.editProfile.lat = ''
+        this.editProfile.lng = ''
         alert('Succes update profile')
         this.setDataUser(this.id)
         this.$bvModal.hide('modal-edit-profile')

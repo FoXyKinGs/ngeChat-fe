@@ -20,7 +20,7 @@ const moduleAuth = {
   actions: {
     login (context, data) {
       return new Promise((resolve, reject) => {
-        axios.post('http://localhost:4000/login', data).then((response) => {
+        axios.post(`${context.rootState.setURL}/login`, data).then((response) => {
           localStorage.setItem('id', response.data[0].id)
           localStorage.setItem('token', response.data[1])
           localStorage.setItem('room', response.data[0].room_id)

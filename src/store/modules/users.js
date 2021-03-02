@@ -34,7 +34,7 @@ const moduleUsers = {
   actions: {
     detailUser (context, data) {
       return new Promise((resolve, reject) => {
-        axios.get(`http://localhost:4000/detailuser/${data}`).then((response) => {
+        axios.get(`${context.rootState.setURL}/detailuser/${data}`).then((response) => {
           context.commit('setDetailUser', response.data[0])
           context.commit('setRoomId', response.data[0].room_id)
           resolve(response)
@@ -45,7 +45,7 @@ const moduleUsers = {
     },
     detailUserReceiver (context, data) {
       return new Promise((resolve, reject) => {
-        axios.get(`http://localhost:4000/detailuser/${data}`).then((response) => {
+        axios.get(`${context.rootState.setURL}/detailuser/${data}`).then((response) => {
           context.commit('setDataReceiver', response.data[0])
           resolve(response)
         }).catch((err) => {
@@ -55,7 +55,7 @@ const moduleUsers = {
     },
     changeProfile (context, { id, data }) {
       return new Promise((resolve, reject) => {
-        axios.patch(`http://localhost:4000/updateprofile/${id}`, data).then((response) => {
+        axios.patch(`${context.rootState.setURL}/updateprofile/${id}`, data).then((response) => {
           resolve(response)
         }).catch((err) => {
           reject(err.response.data)
@@ -64,7 +64,7 @@ const moduleUsers = {
     },
     changePhoto (context, { id, files }) {
       return new Promise((resolve, reject) => {
-        axios.patch(`http://localhost:4000/updateimage/${id}`, files).then((response) => {
+        axios.patch(`${context.rootState.setURL}/updateimage/${id}`, files).then((response) => {
           resolve(response)
         }).catch((err) => {
           reject(err.response.data)
